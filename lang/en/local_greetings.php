@@ -34,4 +34,7 @@ $string['greetinguserfj'] = 'Bula, {$a}.';
 $string['greetingusernz'] = 'Kia Ora, {$a}.';
 $string['yourmessage'] = 'Your message';
 $string['postedby'] = 'Posted by {$a}.';
+$string['messagecardbgcolor'] = 'Message card color';
+$string['messagecardbgcolordesc'] = 'Background color of the message card';
+
 

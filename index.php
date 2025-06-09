@@ -63,6 +63,7 @@ if (isloggedin()) {
 } else {
     $usergreeting = get_string('greetinguser', 'local_greetings');
 }
+
 $templatedata = ['usergreeting' => $usergreeting];
 
 echo $OUTPUT->render_from_template('local_greetings/greeting_message', $templatedata);
@@ -76,7 +77,11 @@ $sql = "SELECT m.id, m.message, m.timecreated, m.userid {$userfieldssql->selects
       ORDER BY timecreated DESC";
 
 $messages = $DB->get_records_sql($sql);
-$templatedata = ['messages' => array_values($messages)];
+$cardbackgroundcolor = get_config('local_greetings', 'messagecardbgcolor');
+$templatedata = [
+    'messages' => array_values($messages),
+    'cardbackgroundcolor' => $cardbackgroundcolor,
+];
 echo $OUTPUT->render_from_template('local_greetings/messages', $templatedata);
 echo $OUTPUT->footer();
 
