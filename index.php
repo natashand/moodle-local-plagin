@@ -23,7 +23,6 @@
  */
 
 require_once('../../config.php');
-require_login();
 require_once($CFG->dirroot. '/local/greetings/lib.php');
 
 $context = context_system::instance();
@@ -32,6 +31,11 @@ $PAGE->set_url(new moodle_url('/local/greetings/index.php'));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('pluginname', 'local_greetings'));
 $PAGE->set_heading(get_string('pluginname', 'local_greetings'));
+
+require_login();
+if (isguestuser()) {
+    throw new moodle_exception('noguest');
+}
 
 $messageform = new \local_greetings\form\message_form();
 
@@ -46,6 +50,11 @@ if ($data = $messageform->get_data()) {
 
         $DB->insert_record('local_greetings_messages', $record);
     }
+}
+
+if ($action === 'del') {
+    require_sesskey();
+    $DB->delete_records('local_greetings_messages', ['id' => $id]);
 }
 
 echo $OUTPUT->header();
