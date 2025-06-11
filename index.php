@@ -52,16 +52,28 @@ if ($data = $messageform->get_data()) {
     }
 }
 
-if ($action === 'del') {
-    require_sesskey();
-    $DB->delete_records('local_greetings_messages', ['id' => $id]);
-}
 
 echo $OUTPUT->header();
 if (isloggedin()) {
     $usergreeting = local_greetings_get_greeting($USER);
 } else {
     $usergreeting = get_string('greetinguser', 'local_greetings');
+}
+
+$action = optional_param('action', '', PARAM_ALPHA);
+$id = optional_param('id', 0, PARAM_INT);
+if ($action === 'del' && $id > 0) {
+    try {
+        require_sesskey();
+        if ($DB->record_exists('local_greetings_messages', ['id' => $id])) {
+            $DB->delete_records('local_greetings_messages', ['id' => $id]);
+            redirect(new moodle_url('/local/greetings/index.php'), 'Запись удалена.', null, \core\output\notification::NOTIFY_SUCCESS);
+        } else {
+            redirect(new moodle_url('/local/greetings/index.php'), 'Запись не найдена.', null, \core\output\notification::NOTIFY_ERROR);
+        }
+    } catch (Exception $e) {
+        redirect(new moodle_url('/local/greetings/index.php'), 'Ошибка: ' . $e->getMessage(), null, \core\output\notification::NOTIFY_ERROR);
+    }
 }
 
 $templatedata = ['usergreeting' => $usergreeting];
